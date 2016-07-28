@@ -24,19 +24,8 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	//Bind the path to the template without maintaining a reference
 	http.Handle("/", &templateHandler{filename: "chat.html"})
-	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	w.Write([]byte(`
-	// 		<html>
-	// 			<head>
-	// 				<title>Chat</title>
-	// 			</head>
-	// 			<body>
-	// 				Lets Chat!
-	// 			</body>
-	// 		</html>
-	// 		`))
-	// })
 
 	//start the web server
 	if err := http.ListenAndServe(":8080", nil); err != nil {
