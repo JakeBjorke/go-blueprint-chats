@@ -5,8 +5,10 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"sync"
+	"trace"
 )
 
 type templateHandler struct {
@@ -30,6 +32,7 @@ func main() {
 	flag.Parse()
 
 	r := newRoom()
+	r.tracer = trace.New(os.Stdout)
 
 	//Bind the path to the template without maintaining a reference
 	http.Handle("/", &templateHandler{filename: "chat.html"})
