@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"html/template"
 	"log"
 	"net/http"
@@ -20,10 +21,14 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
 	})
 
-	t.templ.Execute(w, nil)
+	t.templ.Execute(w, r)
 }
 
 func main() {
+	//get the address from the command line arguments
+	var addr = flag.String("addr", ":8080", "The addr of the application")
+	flag.Parse()
+
 	r := newRoom()
 
 	//Bind the path to the template without maintaining a reference
@@ -34,8 +39,10 @@ func main() {
 	//start the room in a go-routine
 	go r.run()
 
+	log.Println("Starting web server on ", *addr)
+
 	//start the web server
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(*addr, nil); err != nil {
 		log.Fatal("ListenAndServe:  ", err)
 	}
 }
