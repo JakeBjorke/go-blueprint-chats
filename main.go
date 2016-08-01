@@ -34,8 +34,11 @@ func main() {
 	r := newRoom()
 	r.tracer = trace.New(os.Stdout)
 
-	//Bind the path to the template without maintaining a reference
-	http.Handle("/", &templateHandler{filename: "chat.html"})
+	//direct to the chat client
+	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
+	//route to the login page
+	http.Handle("/login", &templateHandler{filename: "login.html"})
+	http.HandleFunc("/auth/", loginHandler)
 	//Bind the room path to the r object
 	http.Handle("/room", r)
 
