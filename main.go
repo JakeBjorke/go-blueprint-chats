@@ -9,6 +9,9 @@ import (
 	"path/filepath"
 	"sync"
 	"trace"
+
+	"github.com/stretchr/gomniauth"
+	"github.com/stretchr/gomniauth/providers/google"
 )
 
 type templateHandler struct {
@@ -30,6 +33,13 @@ func main() {
 	//get the address from the command line arguments
 	var addr = flag.String("addr", ":8080", "The addr of the application")
 	flag.Parse()
+
+	gomniauth.SetSecurityKey("wBpme39jkn8gwwgJFkPLUns4HSVvr2h3AtTRsNv32VvYrxrmavNAtjAd0Ae269V")
+	gomniauth.WithProviders(
+		google.New("827837591987-hbq5h5hh9f15f50b5fromqs2fsd2rg6t.apps.googleusercontent.com",
+			"JTR6g8-6UlzCPVl2XCWd_QVt",
+			"http://localhost:8080/auth/callback/google"),
+	)
 
 	r := newRoom()
 	r.tracer = trace.New(os.Stdout)
