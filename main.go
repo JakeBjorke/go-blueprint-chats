@@ -12,6 +12,7 @@ import (
 
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/providers/google"
+	"github.com/stretchr/objx"
 )
 
 type templateHandler struct {
@@ -26,6 +27,13 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
 	})
 
+	data := map[string]interface{}{
+		"Host": r.Host,
+	}
+	if authCookie, err := r.Cookie("auth"); err == nil {
+		data["UserData"] = objx.MustFromBase64(authCookie.Value)
+	}
+
 	t.templ.Execute(w, r)
 }
 
@@ -34,10 +42,10 @@ func main() {
 	var addr = flag.String("addr", ":8080", "The addr of the application")
 	flag.Parse()
 
-	gomniauth.SetSecurityKey("wBpme39jkn8gwwgJFkPLUns4HSVvr2h3AtTRsNv32VvYrxrmavNAtjAd0Ae269V")
+	gomniauth.SetSecurityKey("wHR9a0Kt20jjzVQnpkdBFSPdhEmyuV6guB2Nn5LVFSH0yv0Q9skPOBK8wcKahXC")
 	gomniauth.WithProviders(
-		google.New("827837591987-hbq5h5hh9f15f50b5fromqs2fsd2rg6t.apps.googleusercontent.com",
-			"JTR6g8-6UlzCPVl2XCWd_QVt",
+		google.New("578717759270-h4oc92fuisc83e75ql95et0960j0l376.apps.googleusercontent.com",
+			"aAqJpqf8bGPKZk1UznGL6FbF",
 			"http://localhost:8080/auth/callback/google"),
 	)
 

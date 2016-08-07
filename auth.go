@@ -18,7 +18,7 @@ func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if _, err := r.Cookie("auth"); err == http.ErrNoCookie {
 		//not authenticated
 		w.Header().Set("location", "/login")
-		w.WriteHeader(http.StatusTemporaryRedirect)
+		// w.WriteHeader(http.StatusTemporaryRedirect)
 	} else if err != nil {
 		//some other error
 		panic(err.Error())
@@ -43,7 +43,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	case "login":
 		provider, err := gomniauth.Provider(provider)
 		if err != nil {
-			log.Fatal("Error when trying to get provider", provider, "-", err)
+			log.Fatalln("Error when trying to get provider", provider, "-", err)
 		}
 
 		loginURL, err := provider.GetBeginAuthURL(nil, nil)
@@ -69,9 +69,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			log.Fatalln("Error when trying to get user from", provider, "-", err)
 		}
 
-		authCookieValue := objx.New(map[string]interface{}{
-			"name": user.Name(),
-		}).MustBase64()
+		authCookieValue := objx.New(map[string]interface{}{"name": user.Name()}).MustBase64()
 
 		http.SetCookie(w, &http.Cookie{
 			Name:  "auth",
